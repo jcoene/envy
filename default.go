@@ -30,6 +30,11 @@ func Get(k string) string {
 	return c.Get(k)
 }
 
+// Get a key using the default client.
+func GetSafe(k string) string {
+	return c.GetSafe(k)
+}
+
 // Get all keys using the default client
 func GetAll() map[string]string {
 	return c.GetAll()

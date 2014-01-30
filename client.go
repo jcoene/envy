@@ -53,6 +53,15 @@ func (c *Client) Get(k string) string {
 	return c.v[k]
 }
 
+// Get a key, panic if it doesn't exist
+func (c *Client) GetSafe(k string) string {
+	s, ok := c.v[k]
+	if !ok {
+		panic(fmt.Sprintf("envy: missing key '%s'", k))
+	}
+	return s
+}
+
 // Get all keys
 func (c *Client) GetAll() map[string]string {
 	return c.v
