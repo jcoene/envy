@@ -39,3 +39,15 @@ func GetSafe(k string) string {
 func GetAll() map[string]string {
 	return c.GetAll()
 }
+
+// Create a new lock using the default client
+func NewLock(name string, ttl int) *Lock {
+	checkDefaultClient()
+	return c.NewLock(name, ttl)
+}
+
+// Create a new register using the default client
+func NewRegister(name string) *Register {
+	checkDefaultClient()
+	return c.NewRegister(name)
+}
