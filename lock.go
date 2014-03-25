@@ -1,6 +1,7 @@
 package envy
 
 import (
+	"fmt"
 	"path"
 	"time"
 
@@ -72,10 +73,24 @@ func (l *Lock) keep() {
 		case <-l.released:
 			return
 		case <-t.C:
-			if _, err := l.c.c.CompareAndSwap(l.key, l.id, l.ttl, l.id, 0); err != nil {
+			if _, err := l.renew(); err != nil {
+				fmt.Printf("unable to keep lock: %s\n", err)
 				l.Lost <- 1
 				return
 			}
 		}
 	}
+}
+
+func (l *Lock) renew() (bool, error) {
+	var err error
+
+	for r := 0; r < 3; r++ {
+		if _, err = l.c.c.CompareAndSwap(l.key, l.id, l.ttl, l.id, 0); err == nil {
+			return true, nil
+		}
+		time.Sleep(1 * time.Second)
+	}
+
+	return false, err
 }
